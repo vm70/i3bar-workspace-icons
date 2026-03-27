@@ -112,8 +112,12 @@ pip install -e .
 - [Michael Stapelberg][michael-stapelberg] & contributors, creator(s) of i3 and
   i3bar
 - [Tony Crisci][acrisci], creator of [i3ipc][i3ipc-python]
-- [Jan Šeda][meelkor], creator of [polybar-i3-windows][polybar-i3-windows]
 - [Tox Development Team][tox-dev], maintainer(s) of [platformdirs][platformdirs]
+
+## Similar Projects
+
+- [goi3autowname][goi3autowname] by [Thomas Bellembois][tbellembois]
+- [polybar-i3-windows][polybar-i3-windows] by [Jan Šeda][meelkor]
 
 ## License
 
@@ -128,6 +132,7 @@ the [3-Clause BSD][3-Clause BSD] license. For more information, see
 [3-Clause BSD]: https://opensource.org/license/BSD-3-clause
 [LICENSE]: https://github.com/vm70/i3bar-workspace-icons/blob/main/LICENSE
 [acrisci]: https://github.com/acrisci
+[goi3autowname]: https://github.com/tbellembois/goi3autowname
 [i3-ws-command]: https://i3wm.org/docs/userguide.html#workspace_command
 [i3]: https://i3wm.org/
 [i3bar-ws-buttons]: https://i3wm.org/docs/i3bar-workspace-protocol.html
@@ -141,5 +146,6 @@ the [3-Clause BSD][3-Clause BSD] license. For more information, see
 [python]: https://www.python.org/
 [swaywm-issue-7419]: https://github.com/swaywm/sway/issues/7419
 [swaywm]: https://swaywm.org/
+[tbellembois]: https://github.com/tbellembois
 [tox-dev]: https://github.com/tox-dev
 [uv]: https://docs.astral.sh/uv/
