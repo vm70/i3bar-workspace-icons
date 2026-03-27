@@ -129,50 +129,51 @@ class IconUpdater:
             key: value for key, value in config["window_classes"].items()
         }
 
-    def override_window_class(self, window_class: str, window_title: str) -> str:
-        """Override the window class if it is a terminal running a terminal application.
+    def fetch_window_icon(self, window_class: str, window_title: str) -> str:
+        """Fetch the desired icon for a window given its window class and window title.
 
         Args:
             window_class: The window class.
             window_title: The window title.
 
         Returns:
-            The new window class
+            The icon
         """
-        if not self.override_windows.get(window_class.lower(), False):
-            return window_class
+        window_class_lower = window_class.lower()
+        base_window_class_icon = self.window_classes.get(
+            window_class_lower, self.default_unmatched_icon
+        )
 
-        for pattern in self.override_patterns:
+        # Case 1: not an overrideable window
+        if not self.override_windows.get(window_class_lower, False):
+            return base_window_class_icon
+
+        # Case 2: overrideable window
+        for pattern, new_window_class in self.override_patterns.items():
+            # Case 2.1: found a match in `override_patterns`
             if pattern in window_title:
-                return self.override_patterns[pattern]
+                return self.fetch_window_icon(new_window_class, window_title)
 
-        return window_class
+        # Case 2.2: no matched pattern
+        return base_window_class_icon
 
-    def list_windows(self, con: i3ipc.Con) -> list[str]:
+    def list_windows(self, con: i3ipc.Con) -> list[i3ipc.Con]:
         """Recursively list all the windows in a workspace.
 
         Args:
             con: An i3 container, typically a workspace or window
 
         Returns:
-            The list of window classes
+            A list of i3 windows / Cons
         """
         result = []
-        if con.type == "con" and getattr(con, "window", None) is not None:
-            window_class: str | None = getattr(con, "window_class", None)
-            window_title: str | None = getattr(con, "window_class", None)
-
-            if window_class is None or window_title is None:
-                logger.warning(
-                    "Invalid window class %s or window title %s",
-                    window_class,
-                    window_title,
-                )
-            else:
-                logger.debug(
-                    "Window Class %s, Window Title %s", window_class, window_title
-                )
-                result.append(self.override_window_class(window_class, window_title))
+        if (
+            con.type == "con"
+            and getattr(con, "window", None) is not None
+            and getattr(con, "window_class", None) is not None
+            and getattr(con, "window_title", None) is not None
+        ):
+            result.append(con)
 
         for node in con.nodes:
             result += self.list_windows(node)
@@ -182,16 +183,16 @@ class IconUpdater:
 
         return result
 
-    def build_icons_string(self, window_classes: list[str]) -> str:
+    def build_icons_string(self, windows: list[i3ipc.Con]) -> str:
         """Build the string of icons for the given window classes.
 
         Args:
-            window_classes: The list of window classes.
+            windows: The list of i3 windows.
 
         Returns:
             The string of icons
         """
-        if len(window_classes) == 0:
+        if len(windows) == 0:
             # No windows means no icons
             return ""
 
@@ -200,14 +201,25 @@ class IconUpdater:
         remaining = 0
 
         # Populate with N-1 matched icons
-        for window_class in window_classes:
+        for window in windows:
             if icon_count >= self.max_icons - 1:
                 remaining += 1
                 continue
 
-            this_window_icon = self.window_classes.get(
-                window_class.lower(), self.default_unmatched_icon
+            this_window_class: str | None = getattr(window, "window_class", None)
+            this_window_title: str | None = getattr(window, "window_title", None)
+            if this_window_class is None or this_window_title is None:
+                logger.warning(
+                    "Invalid window class %s or invalid window title %s",
+                    this_window_class,
+                    this_window_title,
+                )
+                continue
+
+            this_window_icon = self.fetch_window_icon(
+                this_window_class, this_window_title
             )
+
             if this_window_icon != NO_ICON:
                 icons_string += this_window_icon + self.spacer
                 icon_count += 1
