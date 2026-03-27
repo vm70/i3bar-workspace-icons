@@ -9,6 +9,8 @@ This program leverages the [i3bar workspace protocol][i3bar-ws-buttons] to add
 icons corresponding to the windows in each workspace to the i3bar status bar
 (part of the [i3 window manager][i3]).
 
+![An image of the i3bar status bar showing i3bar-workspace-icons in action.](doc/i3bar-workspace-icons-example.png)
+
 ## Features
 
 - Show a set number of window icons for each active, existing workspace
