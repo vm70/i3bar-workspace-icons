@@ -4,7 +4,7 @@ import json
 import logging
 import sys
 from configparser import ConfigParser
-from typing import Literal
+from typing import Any, Literal
 
 import i3ipc
 
@@ -13,8 +13,18 @@ logger = logging.getLogger(__name__)
 NO_ICON = ""
 """Signal value for unmatched windows."""
 
+CON_DEBUG_ATTRS = ("window_class", "window_title")
+"""Attributes of interest in the `i3ipc.Con` class."""
+
 RemainingIconKey = Literal["0", "1", "2", "3", "4", "5", "6", "7", "8", "9+"]
 """Valid keys in the `[remaining]` section of the config file."""
+
+
+def show_con_list(con_list: list[i3ipc.Con]) -> list[tuple[Any | None, ...]]:
+    """Show a list of i3ipc containers for printing."""
+    return [
+        tuple(getattr(con, attr, None) for attr in CON_DEBUG_ATTRS) for con in con_list
+    ]
 
 
 def remaining_key(num_remaining_windows: int) -> RemainingIconKey:
@@ -269,22 +279,25 @@ class IconUpdater:
             _e: The event, not used.
 
         """
-        # This is the list of currently active workspaces.
         workspace_list = i3.get_tree().workspaces()
-        window_classes = {}
+        """This is the list of currently active workspaces."""
+
+        window_classes: dict[str, list[i3ipc.Con]] = {}
+        """Mapping of workspace names to window classes inside them."""
+
         for workspace in workspace_list:
-            workspace_num: int | None = getattr(workspace, "num", None)
-            if workspace_num is not None:
-                window_classes[workspace_num] = self.list_windows(workspace)
-        logger.debug(window_classes)
+            workspace_name: str | None = getattr(workspace, "name", None)
+            if workspace_name is not None:
+                window_classes[workspace_name] = self.list_windows(workspace)
+
+        for name, cons in window_classes.items():
+            logger.debug("Workspace %s: %s", name, show_con_list(cons))
 
         # This is the workspace JSON that we're modifying.
         workspaces = i3.get_workspaces()
-        logger.debug(workspaces)
-
         workspace_ipc_data = [ws.ipc_data for ws in workspaces]
         for ws_ipc in workspace_ipc_data:
-            ws_ipc["name"] += self.build_icons_string(window_classes[ws_ipc["num"]])
+            ws_ipc["name"] += self.build_icons_string(window_classes[ws_ipc["name"]])
 
         workspaces_string = json.dumps(workspace_ipc_data)
         logger.debug(workspaces_string)
