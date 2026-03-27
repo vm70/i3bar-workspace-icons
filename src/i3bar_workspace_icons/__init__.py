@@ -2,7 +2,6 @@
 
 import argparse
 import logging
-import pathlib
 from importlib.metadata import metadata
 
 import i3ipc
@@ -13,10 +12,14 @@ from i3bar_workspace_icons.icon_updater import IconUpdater
 __version__ = metadata("i3bar-workspace-icons")["Version"]
 """Version number of the program (stored in `pyproject.toml`)."""
 
+# Ensure that user directories exist
+dirs.user_config_path.mkdir(parents=True, exist_ok=True)
+dirs.user_log_path.mkdir(parents=True, exist_ok=True)
+
 logger = logging.getLogger(__name__)
 
 logging.basicConfig(
-    filename=pathlib.Path(dirs.user_log_dir, "debug.log"),
+    filename=dirs.user_log_path / "debug.log",
     level=logging.INFO,
     encoding="utf-8",
     format="%(asctime)s - PID %(process)d [%(levelname)s]: %(message)s",
@@ -61,14 +64,14 @@ def read_argv() -> argparse.Namespace:
         default=[],
     )
 
-    args = parser.parse_args()
-    logger.debug("Command line arguments: %s", args)
-    return args
+    return parser.parse_args()
 
 
 def main() -> None:
     """Main entry point to the program."""
     args = read_argv()
+
+    # Configure debugger based on args
 
     # Print version number and exit
     if args.version:

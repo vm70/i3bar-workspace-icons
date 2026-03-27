@@ -3,7 +3,6 @@
 import logging
 import sys
 from configparser import ConfigParser
-from importlib.metadata import metadata
 from importlib.resources import as_file, files
 from os import PathLike
 from pathlib import Path
@@ -12,13 +11,7 @@ from platformdirs import PlatformDirs
 
 logger = logging.getLogger(__name__)
 
-
-dirs = PlatformDirs(
-    appname="i3bar-workspace-icons",
-    appauthor="vm70",
-    version=metadata("i3bar-workspace-icons")["Version"],
-    ensure_exists=True,
-)
+dirs = PlatformDirs(appname="i3bar-workspace-icons", appauthor="vm70")
 """Class containing platform-specific directories for the program."""
 
 CONFIG_FILE_NAME = "config.ini"
