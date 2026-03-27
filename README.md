@@ -116,7 +116,7 @@ i3bar
 
 ## License
 
-This program is not an official extension of i3 or i3bar. It is is licensed
+This program is not an official extension of i3 or i3bar. It is licensed
 under the [3-Clause BSD][3-Clause BSD] license. For more information, see
 [LICENSE][LICENSE].
 
