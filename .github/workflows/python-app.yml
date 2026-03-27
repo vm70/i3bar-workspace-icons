@@ -32,7 +32,20 @@ jobs:
       - name: Type-Check with Pyrefly
         run: |
           pyrefly check
-
-      - name: Test with pytest
+      - name: Test with Pytest
         run: |
           pytest
+      - name: Debug & Dry-Run
+        run: |
+          python3 -m venv .venv --prompt=i3bar-workspace-icons
+          source .venv/bin/activate
+          pip install --editable .
+          i3bar-workspace-icons --debug --dry-run
+          i3bar-workspace-icons --debug --dry-run --version
+          i3bar-workspace-icons --debug --dry-run --dump-config
+          i3bar-workspace-icons --debug --dry-run --configfile ./src/i3bar_workspace_icons/default_config.ini
+          pip install .
+          i3bar-workspace-icons --debug --dry-run
+          i3bar-workspace-icons --debug --dry-run --version
+          i3bar-workspace-icons --debug --dry-run --dump-config
+          i3bar-workspace-icons --debug --dry-run --configfile ./src/i3bar_workspace_icons/default_config.ini
