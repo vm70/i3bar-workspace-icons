@@ -82,7 +82,8 @@ def main() -> None:
         logger.setLevel(logging.INFO)
 
     # Load the configuration
-    config, _ = generate_config(args.configfiles)
+    config, read_files = generate_config(args.configfiles)
+    logger.debug("Read files: %s", read_files)
 
     # Dump the configuration and exit
     if args.dump_config:
