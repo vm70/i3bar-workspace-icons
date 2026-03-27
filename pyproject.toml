@@ -41,6 +41,12 @@ dev = ["pytest>=8.3.5"]
 [tool.setuptools]
 include-package-data = true
 
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.package-data]
+i3bar_workspace_icons = ["*.ini"]
+
 [tool.ruff.lint]
 select = [
     "ANN",  # flake8-annotations
