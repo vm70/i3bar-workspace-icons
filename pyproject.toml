@@ -36,7 +36,7 @@ Repository = "https://github.com/vm70/i3bar-workspace-icons"
 i3bar-workspace-icons = "i3bar_workspace_icons:main"
 
 [dependency-groups]
-dev = ["pytest>=8.3.5"]
+dev = ["pyrefly>=0.58.0", "pytest>=8.3.5", "ruff>=0.15.8"]
 
 [tool.setuptools]
 include-package-data = true

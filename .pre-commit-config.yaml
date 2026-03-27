@@ -1,0 +1,19 @@
+# yaml-language-server: $schema=https://www.schemastore.org/pre-commit-config.json
+repos:
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.15.8
+    hooks:
+      # Run the linter.
+      - id: ruff-check
+        types_or: [python, pyi]
+        args: [--fix]
+      # Run the formatter.
+      - id: ruff-format
+        types_or: [python, pyi]
+  - repo: https://github.com/facebook/pyrefly-pre-commit
+    rev: 0.58.0
+    hooks:
+      - id: pyrefly-check
+        name: Pyrefly (type checking)
+        pass_filenames: false
+        additional_dependencies: ["i3ipc>=2.2.1", "platformdirs>=4.3.7"]
