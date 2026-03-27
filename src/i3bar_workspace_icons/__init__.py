@@ -63,6 +63,13 @@ def read_argv() -> argparse.Namespace:
         help="path to configuration files to use instead of the XDG default",
         default=[],
     )
+    parser.add_argument(
+        "-n",
+        "--dry-run",
+        action="store_true",
+        help="Run the program without connecting to i3 and exit",
+        default=False,
+    )
 
     return parser.parse_args()
 
@@ -71,19 +78,20 @@ def main() -> None:
     """Main entry point to the program."""
     args = read_argv()
 
-    # Configure debugger based on args
-
-    # Print version number and exit
-    if args.version:
-        logger.debug("printing version number")
-        print(__version__)
-        return
-
     # Enable debug logging
     if args.debug:
         logger.setLevel(logging.DEBUG)
     else:
         logger.setLevel(logging.INFO)
+
+    # Print debug information
+    logger.debug("Starting i3bar-workspace-icons with args: %s", args)
+
+    # Print version number and exit
+    if args.version:
+        logger.debug("Printing version number")
+        print(__version__)
+        return
 
     # Load the configuration
     config, read_files = generate_config(args.configfiles)
@@ -91,19 +99,26 @@ def main() -> None:
 
     # Dump the configuration and exit
     if args.dump_config:
-        logger.debug("dumping config")
+        logger.debug("Dumping config")
         dump_config(config)
         return
 
-    # Start the icon updater
-    i3 = i3ipc.Connection()
-    icon_updater = IconUpdater(config)
+    # Stop here if doing a dry run
+    if args.dry_run:
+        logger.debug("Dry run complete")
+        return
 
-    logger.debug("starting icon updater")
+    logger.debug("Connecting to i3")
+    i3 = i3ipc.Connection()
+
+    logger.debug("Initializing Icon Updater, registering callbacks")
+    icon_updater = IconUpdater(config)
     icon_updater.update_workspace_icons(i3, None)
     i3.on(i3ipc.Event.WINDOW, icon_updater.update_workspace_icons)
     i3.on(i3ipc.Event.WORKSPACE, icon_updater.update_workspace_icons)
     i3.on(i3ipc.Event.OUTPUT, icon_updater.update_workspace_icons)
+
+    logger.debug("Initialization complete")
     i3.main()
 
 
