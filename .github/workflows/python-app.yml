@@ -37,6 +37,14 @@ jobs:
           pytest
       - name: Debug & Dry-Run
         run: |
+          python3 -m venv .venv --prompt=i3bar-workspace-icons
+          source .venv/bin/activate
+          pip install --editable .
+          python3 -m i3bar-workspace-icons --debug --dry-run
+          python3 -m i3bar-workspace-icons --debug --dry-run --version
+          python3 -m i3bar-workspace-icons --debug --dry-run --dump-config
+          python3 -m i3bar-workspace-icons --debug --dry-run --configfile ./src/i3bar_workspace_icons/default_config.ini
+          pip install .
           python3 -m i3bar-workspace-icons --debug --dry-run
           python3 -m i3bar-workspace-icons --debug --dry-run --version
           python3 -m i3bar-workspace-icons --debug --dry-run --dump-config
