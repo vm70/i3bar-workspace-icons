@@ -1,0 +1,72 @@
+[build-system]
+requires = ["setuptools>=61"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "i3bar-workspace-icons"
+version = "0.1.0"
+dependencies = ["i3ipc>=2.2.1", "platformdirs>=4.3.7"]
+requires-python = ">=3.13"
+authors = [{ name = "Vincent Mercator", email = "vmercator@protonmail.com" }]
+description = "Workspace command for the i3 window manager that displays Nerd Font / Unicode icons of windows inside each workspace."
+readme = "README.md"
+license = "BSD-3-Clause"
+license-files = ["LICENSE"]
+keywords = ["i3", "i3bar", "nerdfont", "nerdfonts"]
+classifiers = [
+    "Development Status :: 2 - Pre-Alpha",
+    "Environment :: Console",
+    "Environment :: Plugins",
+    "Intended Audience :: Developers",
+    "Intended Audience :: End Users/Desktop",
+    "Natural Language :: English",
+    "Operating System :: POSIX :: Linux",
+    "Operating System :: Unix",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.13",
+    "Topic :: Desktop Environment :: Window Managers :: i3",
+]
+
+[project.urls]
+Homepage = "https://github.com/vm70/i3bar-workspace-icons"
+"Bug Tracker" = "https://github.com/vm70/i3bar-workspace-icons/issues"
+Repository = "https://github.com/vm70/i3bar-workspace-icons"
+
+[project.scripts]
+i3bar-workspace-icons = "i3bar_workspace_icons:main"
+
+[dependency-groups]
+dev = ["pytest>=8.3.5"]
+
+[tool.setuptools]
+include-package-data = true
+
+[tool.ruff.lint]
+select = [
+    "ANN",  # flake8-annotations
+    "B",    # flake8-bugbear
+    "A",    # flake8-builtins
+    "EXE",  # flake8-executable
+    "LOG",  # flake8-logging
+    "G",    # flake8-logging-format
+    "RET",  # flake8-return
+    "SLF",  # flake8-self
+    "SIM",  # flake8-simplify
+    "I",    # isort
+    "C90",  # mccabe
+    "N",    # pep8-naming
+    "PERF", # perflint
+    "E",    # pycodestyle errors
+    "W",    # pycodestyle warnings
+    "DOC",  # pydoclint
+    "D",    # pydocstyle
+    "F",    # pyflakes
+    "PL",   # pylint
+    "RUF",  # ruff-specific-rules
+]
+
+[tool.ruff.lint.pydocstyle]
+convention = "google"
+
+[tool.pyrefly]
+project-includes = ["**/*.py*", "**/*.ipynb"]

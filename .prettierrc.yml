@@ -1,0 +1,5 @@
+# yaml-language-server: $schema=https://www.schemastore.org/prettierrc.json
+proseWrap: "always"
+semi: true
+singleQuote: false
+tabWidth: 2

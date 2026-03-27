@@ -1,0 +1,144 @@
+# i3bar Workspace Icons
+
+[![uv](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/uv/main/assets/badge/v0.json)](https://github.com/astral-sh/uv)
+[![Ruff](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/ruff/main/assets/badge/v2.json)](https://github.com/astral-sh/ruff)
+
+This program leverages the [i3bar workspace protocol][i3bar-ws-buttons] to add
+icons corresponding to the windows in each workspace to the i3bar status bar
+(part of the [i3 window manager][i3]).
+
+## Features
+
+- Show a set number of window icons for each active, existing workspace
+- Customize the icon spacing and icon limit per workspace
+
+## Requirements
+
+- [Python][python] 3.13+
+- [i3 & i3bar][i3] v4.23+[^1]
+- [i3ipc-python][i3ipc-python] v2.2.1+
+- [platformdirs][platformdirs] v4.3.7+
+- A [Nerd Font][nerdfonts] patched font (highly recommended)
+
+This program was tested on Debian GNU/Linux 13 (Trixie), but it should work on
+other Linux distributions as well.
+
+## Installation
+
+Both [`pipx`][pipx] and [`uv`][uv] can install Python programs from public Git
+repositories.
+
+### With `pipx`
+
+```bash
+pipx install git+https://github.com/vm70/i3bar-workspace-icons.git
+```
+
+### With `uv`
+
+```bash
+uv tool install git+https://github.com/vm70/i3bar-workspace-icons.git
+```
+
+## Usage
+
+This program's primary use case is as a [workspace command][i3-ws-command] for
+i3bar. To set it up, modify your i3 configuration file (located in
+`$HOME/.config/i3/config`) to set i3bar's `workspace_command` option to
+`i3bar-workspace-icons`.
+
+```i3config
+bar {
+    # ...
+    workspace_command i3bar-workspace-icons
+    # ...
+}
+```
+
+While it does have a command-line interface, it is not intended to be used
+directly except for debugging purposes or importing/exporting configurations.
+
+```text
+usage: i3bar-workspace-icons [-h] [-V] [-d] [-D] [-c CONFIGFILES]
+
+Workspace command for the i3 window manager that displays Nerd Font / Unicode
+icons of windows inside each workspace.
+
+options:
+  -h, --help            show this help message and exit
+  -V, --version         show the version number of this
+                        program and exit
+  -d, --dump-config     dump the current configuration and
+                        exit
+  -D, --debug           enable debug logging
+  -c, --configfile CONFIGFILES
+                        path to configuration files to use
+                        instead of the XDG default
+
+You shouldn't need to run this program directly in the terminal. Instead, set it
+as the `workspace_command` in your i3bar configurtion.
+```
+
+> [!NOTE]
+>
+> This program is incompatible with the [Sway window manager][swaywm]. The i3bar
+> workspace protocol does not have a corresponding Sway implementation. See
+> [Sway WM Issue #7419][swaywm-issue-7419] for more information.
+
+## Configuration
+
+This program has an internal default / reference INI configuration file located
+at `src/i3bar_workspace_icons/default_config.ini`.
+
+Further customization can be done system-wide by creating a file at
+`/etc/xdg/i3bar-workspace-icons/config.ini`, or per-user in
+`$XDG_CONFIG_HOME/i3bar-workspace-icons/config.ini`.
+
+## Building from Source
+
+This program can be built from source using Python's built-in `venv` module.
+
+```bash
+git clone https://github.com/vm70/i3bar-workspace-icons.git
+cd i3bar-workspace-icons
+python3 -m venv .venv --prompt=i3bar-workspace-icons
+source venv/bin/activate
+pip install -e .
+```
+
+## Special Thanks / Acknowledgments
+
+- [Michael Stapelberg][michael-stapelberg] & contributors, creator(s) of i3 and
+i3bar
+- [Tony Crisci][acrisci], creator of [i3ipc][i3ipc-python]
+- [Jan Šeda][meelkor], creator of [polybar-i3-windows][polybar-i3-windows]
+- [Tox Development Team][tox-dev], maintainer(s) of [platformdirs][platformdirs]
+
+## License
+
+This program is not an official extension of i3 or i3bar. It is is licensed
+under the [3-Clause BSD][3-Clause BSD] license. For more information, see
+[LICENSE][LICENSE].
+
+[^1]:
+    This is a hard requirement; the i3bar workspace protocol was introduced in
+    i3 version 4.23.
+
+[3-Clause BSD]: https://opensource.org/license/BSD-3-clause
+[LICENSE]: https://github.com/vm70/i3bar-workspace-icons/blob/main/LICENSE
+[acrisci]: https://github.com/acrisci
+[i3-ws-command]: https://i3wm.org/docs/userguide.html#workspace_command
+[i3]: https://i3wm.org/
+[i3bar-ws-buttons]: https://i3wm.org/docs/i3bar-workspace-protocol.html
+[i3ipc-python]: https://github.com/altdesktop/i3ipc-python
+[meelkor]: https://github.com/meelkor
+[michael-stapelberg]: https://michael.stapelberg.ch/
+[nerdfonts]: https://www.nerdfonts.com/
+[pipx]: https://pipx.pypa.io/
+[platformdirs]: https://platformdirs.readthedocs.io/en/latest/
+[polybar-i3-windows]: https://github.com/meelkor/polybar-i3-windows
+[python]: https://www.python.org/
+[swaywm-issue-7419]: https://github.com/swaywm/sway/issues/7419
+[swaywm]: https://swaywm.org/
+[tox-dev]: https://github.com/tox-dev
+[uv]: https://docs.astral.sh/uv/
