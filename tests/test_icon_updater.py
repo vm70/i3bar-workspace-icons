@@ -2,9 +2,14 @@
 
 import unittest
 from configparser import ConfigParser
+from typing import get_args
 
 from i3bar_workspace_icons.configuration import DEFAULT_CONFIG_INI, generate_config
-from i3bar_workspace_icons.icon_updater import IconUpdater, remaining_key
+from i3bar_workspace_icons.icon_updater import (
+    IconUpdater,
+    RemainingIconKey,
+    remaining_key,
+)
 
 
 class TestIconUpdater(unittest.TestCase):
@@ -38,7 +43,7 @@ class TestIconUpdater(unittest.TestCase):
                 )
 
         # Test remaining window icons
-        for icon_key in self.config["remaining"]:
+        for icon_key in get_args(RemainingIconKey):
             with self.subTest(icon_key=icon_key):
                 if icon_key == "show":
                     continue

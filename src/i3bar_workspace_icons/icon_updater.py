@@ -4,17 +4,20 @@ import json
 import logging
 import sys
 from configparser import ConfigParser
+from typing import Literal
 
 import i3ipc
 
 logger = logging.getLogger(__name__)
 
-
 NO_ICON = ""
 """Signal value for unmatched windows."""
 
+RemainingIconKey = Literal["0", "1", "2", "3", "4", "5", "6", "7", "8", "9+"]
+"""Valid keys in the `[remaining]` section of the config file."""
 
-def remaining_key(num_remaining_windows: int) -> str:
+
+def remaining_key(num_remaining_windows: int) -> RemainingIconKey:
     """Get the icon key showing the number of remaining (unmatched) windows.
 
     Args:
@@ -22,30 +25,63 @@ def remaining_key(num_remaining_windows: int) -> str:
 
     Returns:
         The icon key, a string number or "9+"
+
+    Raises:
+        ValueError: If the number of remaining windows is negative
     """
-    if num_remaining_windows < 9:  # noqa: PLR2004
+    # Invalid window count
+    if num_remaining_windows < 0:
+        raise ValueError("Remaining window count must not be negative")
+
+    # Returning "0"-"8"
+    if 0 <= num_remaining_windows < 9:  # noqa: PLR2004
+        # pyrefly: ignore
         return str(num_remaining_windows)
 
+    # Returning "9+"
     return "9+"
 
 
 class IconUpdater:
     """The icon updater class that handles fetching and setting the workspace icons."""
 
-    config: ConfigParser
-    """The configuration for this icon updater."""
+    # [options]
+
+    spacing: int
+    """The number of spaces between icons."""
+    max_icons: int
+    """The maximum number of icons to show per workspace."""
+    spacer: str
+    """The spacer string, placed between icons."""
+
+    # [override_windows]
+
     override_windows: dict[str, bool]
-    """Which windows to override the icon for."""
+    """Dictionary detailing which windows to override the icon for."""
+
+    # [override_patterns]
+
     override_patterns: dict[str, str]
     """What patterns to search for when overriding windows."""
-    remaining_icons: dict[str, str]
-    """Icons for the number of remaining windows."""
+
+    # [unmatched]
+
+    show_unmatched: bool
+    """Whether to show unmatched windows."""
+    unmatched_default_icon: str = NO_ICON
+    """The icon (or lack thereof) to show for unmatched windows."""
+
+    # [remaining]
+
+    show_remaining: bool
+    """Whether to show the remaining number of windows."""
+    remaining_icons: dict[RemainingIconKey, str]
+    """Dictionary mapping keys ("1"-"9+") to the number of remaining windows."""
+
+    # [window_classes]
+
     window_classes: dict[str, str]
     """Mapping from window classes to icons."""
-    spacer: str
-    """The spacer string."""
-    default_unmatched_icon: str = NO_ICON
-    """The default icon for unmatched windows."""
 
     def __init__(self, config: ConfigParser) -> None:
         """Initialize the icon updater.
@@ -53,26 +89,45 @@ class IconUpdater:
         Args:
             config: The configuration.
         """
-        self.config = config
+        # [options]
+
+        self.spacing = config.getint("options", "spacing")
+        self.max_icons = config.getint("options", "max_icons")
+        self.spacer = " " * self.spacing
+
+        # [override_windows]
+
         self.override_windows = {
             option: config.getboolean("override_windows", option)
             for option in config["override_windows"]
         }
+
+        # [override_patterns]
+
         self.override_patterns = {
             value: key for key, value in config["override_patterns"].items()
         }
+
+        # [unmatched]
+
+        self.show_unmatched = config.getboolean("unmatched", "show")
+        if self.show_unmatched:
+            self.default_unmatched_icon = config.get("unmatched", "default")
+        else:
+            self.default_unmatched_icon = NO_ICON
+
+        # [remaining]
+
+        self.show_remaining = config.getboolean("remaining", "show")
+
+        # pyrefly: ignore
         self.remaining_icons = {
             key: value for key, value in config["remaining"].items()
         }
-        self.remaining_icons.pop("show")
-
+        self.remaining_icons.pop("show")  # pyrefly: ignore
         self.window_classes = {
             key: value for key, value in config["window_classes"].items()
         }
-        self.spacer = " " * config.getint("options", "spacing")
-
-        if self.config.getboolean("unmatched", "show"):
-            self.default_unmatched_icon = self.config.get("unmatched", "default")
 
     def override_window_class(self, window_class: str, window_title: str) -> str:
         """Override the window class if it is a terminal running a terminal application.
@@ -138,7 +193,7 @@ class IconUpdater:
 
         # Populate with N-1 matched icons
         for window_class in window_classes:
-            if icon_count >= self.config.getint("options", "max_icons"):
+            if icon_count >= self.max_icons - 1:
                 remaining += 1
                 continue
 
@@ -152,7 +207,7 @@ class IconUpdater:
                 remaining += 1
 
         # Populate with Nth icon (showing how many remaining windows)
-        if remaining >= 1 and self.config.getboolean("remaining", "show"):
+        if remaining >= 1 and self.show_remaining:
             icons_string += (
                 self.remaining_icons.get(remaining_key(remaining), "") + self.spacer
             )
