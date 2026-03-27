@@ -101,7 +101,7 @@ This program can be built from source using Python's built-in `venv` module.
 git clone https://github.com/vm70/i3bar-workspace-icons.git
 cd i3bar-workspace-icons
 python3 -m venv .venv --prompt=i3bar-workspace-icons
-source venv/bin/activate
+source .venv/bin/activate
 pip install -e .
 ```
 
