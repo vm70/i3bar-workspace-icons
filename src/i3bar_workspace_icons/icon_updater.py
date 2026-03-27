@@ -158,13 +158,21 @@ class IconUpdater:
             The list of window classes
         """
         result = []
-        # pyrefly: ignore
-        if con.type == "con" and con.window is not None:
-            logger.debug("class %s, %s", con.window_class, con.window_title)
-            result.append(
-                # pyrefly: ignore
-                self.override_window_class(con.window_class, con.window_title)
-            )
+        if con.type == "con" and getattr(con, "window", None) is not None:
+            window_class: str | None = getattr(con, "window_class", None)
+            window_title: str | None = getattr(con, "window_class", None)
+
+            if window_class is None or window_title is None:
+                logger.warning(
+                    "Invalid window class %s or window title %s",
+                    window_class,
+                    window_title,
+                )
+            else:
+                logger.debug(
+                    "Window Class %s, Window Title %s", window_class, window_title
+                )
+                result.append(self.override_window_class(window_class, window_title))
 
         for node in con.nodes:
             result += self.list_windows(node)
@@ -236,8 +244,9 @@ class IconUpdater:
         workspace_list = i3.get_tree().workspaces()
         window_classes = {}
         for workspace in workspace_list:
-            # pyrefly: ignore
-            window_classes[workspace.num] = self.list_windows(workspace)
+            workspace_num: int | None = getattr(workspace, "num", None)
+            if workspace_num is not None:
+                window_classes[workspace_num] = self.list_windows(workspace)
         logger.debug(window_classes)
 
         # This is the workspace JSON that we're modifying.
