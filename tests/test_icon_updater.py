@@ -3,9 +3,16 @@
 import unittest
 from configparser import ConfigParser
 from typing import get_args
+from unittest.mock import Mock
+
+import i3ipc
 
 from i3bar_workspace_icons.configuration import DEFAULT_CONFIG_INI, generate_config
-from i3bar_workspace_icons.icon_updater import IconUpdater, RemainingIconKey
+from i3bar_workspace_icons.icon_updater import (
+    IconUpdater,
+    RemainingIconKey,
+    remaining_key,
+)
 
 
 class TestIconUpdater(unittest.TestCase):
@@ -88,10 +95,46 @@ class TestIconUpdater(unittest.TestCase):
             window_title="pattern1",
         )
 
-    @unittest.skip("Placeholder `i3ipc.Con` not implemented yet")
     def test_build_icons_string(self) -> None:
         """Test the `build_icons_string` method."""
-        # TODO: add placeholder equivalent of `i3ipc.Con` for unit testing
+        alacritty = Mock(spec=i3ipc.Con)
+        alacritty.window_class = "Alacritty"
+        alacritty.window_title = "Alacritty"
+
+        # Test for 0 icons
+
+        self.assertEqual(
+            self.icon_updater.build_icons_string([]),
+            "",
+        )
+
+        # Test for 1 to N-1 icons
+
+        for i in range(1, self.icon_updater.max_icons - 1):
+            with self.subTest(i=i):
+                self.assertEqual(
+                    self.icon_updater.build_icons_string([alacritty] * i),
+                    " " + f"{self.config.get('window_classes', 'alacritty')} " * i,
+                )
+
+        # Test for N icons to N + 10 icons (and more)
+
+        for i in range(self.icon_updater.max_icons, self.icon_updater.max_icons + 20):
+            num_rendered_icons = self.icon_updater.max_icons - 1
+
+            remaining_icon = self.config.get(
+                "remaining", remaining_key(i - self.icon_updater.max_icons + 1)
+            )
+
+            with self.subTest(i=i):
+                self.assertEqual(
+                    self.icon_updater.build_icons_string([alacritty] * i),
+                    " "
+                    + f"{self.config.get('window_classes', 'alacritty')} "
+                    * num_rendered_icons
+                    + remaining_icon
+                    + " ",
+                )
         pass
 
 
