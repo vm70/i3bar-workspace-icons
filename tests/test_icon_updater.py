@@ -75,6 +75,19 @@ class TestIconUpdater(unittest.TestCase):
             self.icon_updater.window_classes.get("firefox"),
         )
 
+    def test_recursive_config(self) -> None:
+        """Test if having recursive overriding patterns will throw an error."""
+        self.icon_updater.override_patterns["pattern1"] = "pattern2"
+        self.icon_updater.override_patterns["pattern2"] = "pattern1"
+        self.icon_updater.override_windows["pattern1"] = True
+        self.icon_updater.override_windows["pattern2"] = True
+        self.assertRaises(
+            RuntimeError,
+            self.icon_updater.fetch_window_icon,
+            window_class="alacritty",
+            window_title="pattern1",
+        )
+
     @unittest.skip("Placeholder `i3ipc.Con` not implemented yet")
     def test_build_icons_string(self) -> None:
         """Test the `build_icons_string` method."""

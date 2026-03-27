@@ -129,32 +129,49 @@ class IconUpdater:
             key: value for key, value in config["window_classes"].items()
         }
 
-    def fetch_window_icon(self, window_class: str, window_title: str) -> str:
+    def fetch_window_icon(
+        self, window_class: str, window_title: str, called_recursively: bool = False
+    ) -> str:
         """Fetch the desired icon for a window given its window class and window title.
 
         Args:
             window_class: The window class.
             window_title: The window title.
+            called_recursively: whether or not this function was called from itself.
 
         Returns:
             The icon
         """
-        window_class_lower = window_class.lower()
+        window_class = window_class.lower()
         base_window_class_icon = self.window_classes.get(
-            window_class_lower, self.default_unmatched_icon
+            window_class, self.default_unmatched_icon
         )
 
         # Case 1: not an overrideable window
-        if not self.override_windows.get(window_class_lower, False):
+        if not self.override_windows.get(window_class, False):
             return base_window_class_icon
 
         # Case 2: overrideable window
         for pattern, new_window_class in self.override_patterns.items():
-            # Case 2.1: found a match in `override_patterns`
-            if pattern in window_title:
-                return self.fetch_window_icon(new_window_class, window_title)
+            if pattern not in window_title:
+                # Skip over non-matching patterns
+                continue
 
-        # Case 2.2: no matched pattern
+            # Case 2.1: found a match in `override_patterns`, but this function was
+            # called recursively
+            if called_recursively:
+                msg = "Overridable window class %s is itself overridable by %s" % (
+                    window_class,
+                    new_window_class,
+                )
+                logger.fatal(msg)
+                raise RuntimeError(msg)
+            # Case 2.2: found a match in `override_patterns`
+            return self.fetch_window_icon(
+                new_window_class, window_title, called_recursively=True
+            )
+
+        # Case 2.3: no matched pattern
         return base_window_class_icon
 
     def list_windows(self, con: i3ipc.Con) -> list[i3ipc.Con]:
