@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "i3bar-workspace-icons"
-version = "0.1.2"
+version = "0.1.3"
 dependencies = ["i3ipc>=2.2.1", "platformdirs>=4.3.7"]
 requires-python = ">=3.13"
 authors = [{ name = "Vincent Mercator", email = "vmercator@protonmail.com" }]
@@ -36,7 +36,7 @@ Repository = "https://github.com/vm70/i3bar-workspace-icons"
 i3bar-workspace-icons = "i3bar_workspace_icons:main"
 
 [dependency-groups]
-dev = ["pytest>=8.3.5"]
+dev = ["pyrefly>=0.58.0", "pytest>=8.3.5", "ruff>=0.15.8"]
 
 [tool.setuptools]
 include-package-data = true
