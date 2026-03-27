@@ -11,8 +11,8 @@ from platformdirs import PlatformDirs
 
 logger = logging.getLogger(__name__)
 
-dirs = PlatformDirs("i3bar-workspace-icons", "vm70")
-"""Platform-specific directories for the program."""
+dirs = PlatformDirs(appname="i3bar-workspace-icons", appauthor="vm70")
+"""Class containing platform-specific directories for the program."""
 
 CONFIG_FILE_NAME = "config.ini"
 """Name of the default configuration file in the user & site config directories."""
