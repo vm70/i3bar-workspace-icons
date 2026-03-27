@@ -193,7 +193,7 @@ class IconUpdater:
 
         # Populate with N-1 matched icons
         for window_class in window_classes:
-            if icon_count >= self.max_icons:
+            if icon_count >= self.max_icons - 1:
                 remaining += 1
                 continue
 
