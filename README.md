@@ -59,24 +59,23 @@ While it does have a command-line interface, it is not intended to be used
 directly except for debugging purposes or importing/exporting configurations.
 
 ```text
-usage: i3bar-workspace-icons [-h] [-V] [-d] [-D] [-c CONFIGFILES]
+usage: i3bar-workspace-icons [-h] [-V] [-d] [-D] [-c CONFIGFILES] [-n]
 
 Workspace command for the i3 window manager that displays Nerd Font / Unicode
 icons of windows inside each workspace.
 
 options:
   -h, --help            show this help message and exit
-  -V, --version         show the version number of this
-                        program and exit
-  -d, --dump-config     dump the current configuration and
-                        exit
+  -V, --version         show the version number of this program and exit
+  -d, --dump-config     dump the current configuration and exit
   -D, --debug           enable debug logging
   -c, --configfile CONFIGFILES
-                        path to configuration files to use
-                        instead of the XDG default
+                        path to configuration files to use instead of the XDG
+                        default
+  -n, --dry-run         Run the program without connecting to i3 and exit
 
-You shouldn't need to run this program directly in the terminal. Instead, set it
-as the `workspace_command` in your i3bar configurtion.
+You shouldn't need to run this program directly in the terminal. Instead, set
+it as the `workspace_command` in your i3bar configurtion.
 ```
 
 > [!NOTE]
@@ -109,15 +108,15 @@ pip install -e .
 ## Special Thanks / Acknowledgments
 
 - [Michael Stapelberg][michael-stapelberg] & contributors, creator(s) of i3 and
-i3bar
+  i3bar
 - [Tony Crisci][acrisci], creator of [i3ipc][i3ipc-python]
 - [Jan Šeda][meelkor], creator of [polybar-i3-windows][polybar-i3-windows]
 - [Tox Development Team][tox-dev], maintainer(s) of [platformdirs][platformdirs]
 
 ## License
 
-This program is not an official extension of i3 or i3bar. It is licensed
-under the [3-Clause BSD][3-Clause BSD] license. For more information, see
+This program is not an official extension of i3 or i3bar. It is licensed under
+the [3-Clause BSD][3-Clause BSD] license. For more information, see
 [LICENSE][LICENSE].
 
 [^1]:
