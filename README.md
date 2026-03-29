@@ -153,7 +153,7 @@ the [3-Clause BSD][3-Clause BSD] license. For more information, see
 [cboddy]: https://github.com/cboddy
 [default_config_ini]: https://github.com/vm70/i3bar-workspace-icons/blob/main/src/i3bar_workspace_icons/default_config.ini
 [goi3autowname]: https://github.com/tbellembois/goi3autowname
-[i3-workspace-names-daemon]: https://github.com/cboddy
+[i3-workspace-names-daemon]: https://github.com/cboddy/i3-workspace-names-daemon
 [i3-ws-command]: https://i3wm.org/docs/userguide.html#workspace_command
 [i3]: https://i3wm.org/
 [i3bar-ws-buttons]: https://i3wm.org/docs/i3bar-workspace-protocol.html
