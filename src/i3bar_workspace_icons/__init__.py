@@ -26,57 +26,53 @@ logging.basicConfig(
 )
 
 
-def read_argv() -> argparse.Namespace:
-    """Read command line arguments."""
-    parser = argparse.ArgumentParser(
-        prog="i3bar-workspace-icons",
-        description=metadata("i3bar-workspace-icons")["Summary"],
-        epilog=(
-            "You shouldn't need to run this program directly in the terminal. "
-            "Instead, set it as the `workspace_command` in your i3bar configurtion."
-        ),
-    )
-    parser.add_argument(
-        "-V",
-        "--version",
-        action="store_true",
-        help="show the version number of this program and exit",
-    )
-    parser.add_argument(
-        "-d",
-        "--dump-config",
-        action="store_true",
-        help="dump the current configuration and exit",
-    )
-    parser.add_argument(
-        "-D",
-        "--debug",
-        action="store_true",
-        help="enable debug logging",
-        default=False,
-    )
-    parser.add_argument(
-        "-c",
-        "--configfile",
-        action="append",
-        dest="configfiles",
-        help="path to configuration files to use instead of the XDG default",
-        default=[],
-    )
-    parser.add_argument(
-        "-n",
-        "--dry-run",
-        action="store_true",
-        help="Run the program without connecting to i3 and exit",
-        default=False,
-    )
-
-    return parser.parse_args()
+parser = argparse.ArgumentParser(
+    prog="i3bar-workspace-icons",
+    description=metadata("i3bar-workspace-icons")["Summary"],
+    epilog=(
+        "You shouldn't need to run this program directly in the terminal. "
+        "Instead, set it as the `workspace_command` in your i3bar configurtion."
+    ),
+)
+parser.add_argument(
+    "-V",
+    "--version",
+    action="store_true",
+    help="show the version number of this program and exit",
+)
+parser.add_argument(
+    "-d",
+    "--dump-config",
+    action="store_true",
+    help="dump the current configuration and exit",
+)
+parser.add_argument(
+    "-D",
+    "--debug",
+    action="store_true",
+    help="enable debug logging",
+    default=False,
+)
+parser.add_argument(
+    "-c",
+    "--configfile",
+    action="append",
+    dest="configfiles",
+    help="path to configuration files to use instead of the XDG default",
+    default=[],
+)
+parser.add_argument(
+    "-n",
+    "--dry-run",
+    action="store_true",
+    help="Run the program without connecting to i3 and exit",
+    default=False,
+)
 
 
 def main() -> None:
     """Main entry point to the program."""
-    args = read_argv()
+    args = parser.parse_args()
 
     # Enable debug logging
     if args.debug:
