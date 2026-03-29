@@ -39,6 +39,9 @@ def generate_config(
     Returns:
         config: the configuration.
         read_files: the files that were read.
+
+    Raises:
+        RuntimeError: if the default configuration cannot be read.
     """
     config = ConfigParser()
 
@@ -73,5 +76,29 @@ def generate_config(
 
 
 def dump_config(config: ConfigParser) -> None:
-    """Dump the ConfigParser's configuration to `stdout`."""
+    """Dump the ConfigParser's configuration to `stdout`.
+
+    Args:
+        config: the configuration to dump.
+
+    Raises:
+        RuntimeError: if the default configuration file cannot be read
+    """
+    # Print locations of where this file should go
+    with as_file(DEFAULT_CONFIG_INI) as config_path:
+        if not (config_path.exists() and config_path.is_file()):
+            raise RuntimeError("Cannot read default config")
+        print(
+            "; For reference, the default configuration is located at `%s`"
+            % config_path
+        )
+
+    print(
+        "; Place this in `%s` for system-wide configuration"
+        % (dirs.site_config_path / CONFIG_FILE_NAME)
+    )
+    print(
+        "; Place this in `%s` for your personal configuration"
+        % (dirs.user_config_path / CONFIG_FILE_NAME)
+    )
     config.write(sys.stdout)
