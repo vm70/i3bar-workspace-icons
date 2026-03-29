@@ -91,7 +91,7 @@ it as the `workspace_command` in your i3bar configurtion.
 ## Configuration
 
 This program has an internal default / reference INI configuration file located
-at `src/i3bar_workspace_icons/default_config.ini`.
+at [`src/i3bar_workspace_icons/default_config.ini`][default_config_ini].
 
 Further customization can be done system-wide by creating a file at
 `/etc/xdg/i3bar-workspace-icons/config.ini`, or per-user in
@@ -137,6 +137,8 @@ the [3-Clause BSD][3-Clause BSD] license. For more information, see
 [LICENSE]: https://github.com/vm70/i3bar-workspace-icons/blob/main/LICENSE
 [acrisci]: https://github.com/acrisci
 [cboddy]: https://github.com/cboddy
+[default_config_ini]:
+  https://github.com/vm70/i3bar-workspace-icons/blob/main/src/i3bar_workspace_icons/default_config.ini
 [goi3autowname]: https://github.com/tbellembois/goi3autowname
 [i3-workspace-names-daemon]: https://github.com/cboddy
 [i3-ws-command]: https://i3wm.org/docs/userguide.html#workspace_command
