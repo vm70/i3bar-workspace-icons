@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "i3bar-workspace-icons"
-version = "0.2.1"
+version = "0.2.2"
 dependencies = ["i3ipc>=2.2.1", "platformdirs>=4.3.7"]
 requires-python = ">=3.13"
 authors = [{ name = "Vincent Mercator", email = "vmercator@protonmail.com" }]
