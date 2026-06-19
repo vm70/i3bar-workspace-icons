@@ -279,11 +279,14 @@ class IconUpdater:
             _e: The event, not used.
 
         """
+        # This is the list of currently active workspaces.
         workspace_list = i3.get_tree().workspaces()
-        """This is the list of currently active workspaces."""
 
+        # This is the workspace JSON that we're modifying.
+        workspaces = i3.get_workspaces()
+
+        # Mapping of workspace names to window classes inside them.
         window_classes: dict[str, list[i3ipc.Con]] = {}
-        """Mapping of workspace names to window classes inside them."""
 
         for workspace in workspace_list:
             workspace_name: str | None = getattr(workspace, "name", None)
@@ -293,11 +296,11 @@ class IconUpdater:
         for name, cons in window_classes.items():
             logger.debug("Workspace %s: %s", name, show_con_list(cons))
 
-        # This is the workspace JSON that we're modifying.
-        workspaces = i3.get_workspaces()
         workspace_ipc_data = [ws.ipc_data for ws in workspaces]
         for ws_ipc in workspace_ipc_data:
-            ws_ipc["name"] += self.build_icons_string(window_classes[ws_ipc["name"]])
+            ws_name = ws_ipc.get("name")
+            ws_windows = window_classes.get(ws_name, [])
+            ws_ipc["name"] += self.build_icons_string(ws_windows)
 
         workspaces_string = json.dumps(workspace_ipc_data)
         logger.debug(workspaces_string)
